@@ -97,13 +97,14 @@ app.get('/users', (req, res) => {
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
+    userToAdd.id = Math.random().toString();
+
     addUser(userToAdd);
-    res.send();
+    res.status(201).send(userToAdd);
 });
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params.id;
-    console.log("USER_ID"+id);
     deleteUser(id);
     res.send();
 });

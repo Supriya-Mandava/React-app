@@ -8,6 +8,7 @@ function MyApp() {
   ]);
   
   function removeOneCharacter (index) {
+    deleteUser(characters[index].id);
     const updated = characters.filter((character, i) => {
         return i !== index
     });
@@ -16,7 +17,15 @@ function MyApp() {
 
   function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((response) => {
+      if (response.status === 201) {
+        // Update the state on the frontend.
+        return response.json()
+      }
+      })
+      .then((json) => {
+        setCharacters([...characters, json]);
+      })
       .catch((error) => {
         console.log(error);
       })
@@ -34,6 +43,15 @@ function postUser(person) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(person),
+  });
+
+  return promise;
+}
+
+function deleteUser(id) {
+  const url = `Http://localhost:8000/users/${id}`;
+  const promise = fetch(url, {
+    method: "DELETE"
   });
 
   return promise;
